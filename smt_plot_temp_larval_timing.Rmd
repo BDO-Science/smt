@@ -43,7 +43,7 @@ smelt_timing <- read_excel("data_raw/larval_smelt_timing.xlsx") %>%
          date2 = lubridate::ymd(date2),
          wy = year(x0),
          fWY = factor(wy))%>%
-  filter(wy > 2009 & wy< 2020) 
+  filter(wy > 2008 & wy< 2020) 
 
 # Water temp
 stations_temp <- c("BLP", "HLT", "HOL")
@@ -82,7 +82,7 @@ temp_daily <- temp_sum %>%
   rename(wytype = SacramentoValley) %>%
   select(index, everything()) %>%
   select(-SanJoaquinValley) %>%
-  filter(!is.na(wytype), (month >1 & month < 6), wy > 2009 & wy< 2020) %>%
+  filter(!is.na(wytype), (month >1 & month < 6), wy > 2008 & wy< 2020) %>%
    mutate(wytype = factor(wytype, levels = c("W", "AN", "BN","D", "C")),
           fWY = factor(wy),
           over12 = ifelse(meanTemp > 12, 20, 0)) # label if over 12 degrees
@@ -103,7 +103,7 @@ plot_temp <- ggplot2::ggplot()+
   ggplot2::geom_line(data=temp_daily, aes(x=date2,y=meanTemp,color=station, linetype = wytype), size = 0.5)+
   ggplot2::geom_vline(data=smelt_timing, aes(xintercept = date2))+
   ggplot2::geom_hline(yintercept = 12)+
-  ggplot2::geom_point(data = firsttemp, aes(x = date2, y = 12, color = station), size = 2, shape = 5) + facet_wrap(~fWY, strip.position = "left", nrow = 10)+
+  ggplot2::geom_point(data = firsttemp, aes(x = date2, y = 12, color = station), size = 2, shape = 5) + facet_wrap(~fWY, strip.position = "left", nrow = 11)+
   ggplot2::scale_colour_manual(values = c("orange3", "aquamarine3", "darkblue")) +
   ggplot2::scale_linetype_manual(values = c("dotted", "solid", "twodash", "longdash")) +
   ggplot2::theme(plot.title=element_text(size=10), 
@@ -128,7 +128,7 @@ png(here("figures","temp_larvaldetection.tiff"),
      type="cairo",
      units="in", 
      width=8, 
-     height=8, 
+     height=8.1, 
      pointsize=5, 
      res=300)
 print(plot_temp)
