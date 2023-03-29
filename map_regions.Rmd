@@ -1,0 +1,87 @@
+---
+title: "map"
+author: "Catarina Pien"
+date: '2023-03-28'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(deltamapr)
+library(ggplot2)
+```
+
+Region Phase 3
+```{r}
+(map <- ggplot() + 
+   geom_sf(data = WW_Delta, color = "black") +
+   geom_sf(data = R_EDSM_Regions_19P3, aes(fill = Region), alpha = 0.3, inherit.aes = FALSE)+
+
+ # annotation_north_arrow(location = "tl", which_north = "true",
+ #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
+ #                            style = north_arrow_fancy_orienteering) +
+  #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, vjust = 0.5)))
+```
+
+Region Phase 1
+```{r}
+(map <- ggplot() + 
+  geom_sf(data = WW_Delta, color = "black") +
+   geom_sf(data = R_EDSM_Regions_1819P1, aes(fill = Region), alpha= 0.2 ,inherit.aes = FALSE)+
+ 
+ # annotation_north_arrow(location = "tl", which_north = "true",
+ #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
+ #                            style = north_arrow_fancy_orienteering) +
+  #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, vjust = 0.5)))
+```
+
+
+```{r}
+(map_s <- ggplot() + 
+  geom_sf(data = WW_Delta, color = "black") +
+   geom_sf(data = R_EDSM_Strata_19P3, aes(fill = Stratum), alpha = 0.4,inherit.aes = FALSE)+
+ 
+ # annotation_north_arrow(location = "tl", which_north = "true",
+ #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
+ #                            style = north_arrow_fancy_orienteering) +
+  #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, vjust = 0.5)))
+```
+
+
+```{r}
+(map_s <- ggplot() + 
+  geom_sf(data = WW_Delta, color = "black") +
+   geom_sf(data = R_EDSM_Strata_1819P1, aes(fill = Stratum), alpha = 0.4,inherit.aes = FALSE)+
+ 
+ # annotation_north_arrow(location = "tl", which_north = "true",
+ #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
+ #                            style = north_arrow_fancy_orienteering) +
+  #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, vjust = 0.5)))
+```
+
+
