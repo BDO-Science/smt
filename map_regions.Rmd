@@ -14,18 +14,55 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(deltamapr)
 library(ggplot2)
+library(deltafish)
+library(dplyr)
+library(sf)
+```
+
+Save 20mm and SLS stations
+```{r}
+surv <- open_survey()
+surv_20_sls <- surv %>%
+  filter(Source %in% c("20mm", "SLS")) %>%
+  select(Station, Latitude, Longitude, Source) %>%
+  collect()
+
+survloc_sf <- surv_20_sls %>% 
+  distinct() %>%
+  filter(!is.na(Longitude)) %>%
+  st_as_sf(coords = c("Longitude", "Latitude"),
+           crs = 4326, remove = FALSE)
+
+survall <- survloc_sf %>%
+  group_by(Station) %>%
+  slice(1) %>%
+  ungroup()
+
+twentymm <- survloc_sf %>%
+  filter(Source == "20mm") %>%
+  distinct()
+
+sls <- survloc_sf %>%
+  filter(Source == "SLS") %>%
+  distinct()
+
+
 ```
 
 Region Phase 3
 ```{r}
-(map <- ggplot() + 
-   geom_sf(data = WW_Delta, color = "black") +
+(map3 <- ggplot() + 
+   geom_sf(data = WW_Delta, color = "darkslategray3") +
    geom_sf(data = R_EDSM_Regions_19P3, aes(fill = Region), alpha = 0.3, inherit.aes = FALSE)+
-
+   geom_sf(data = survall, color = "gray40") + 
+   geom_sf_text(data = survall, mapping = aes(label = Station), size = 3, nudge_x = -0.012, nudge_y = 0.02) + 
+     scale_x_continuous(limits = c(-122.45, -121.3)) + 
+   scale_y_continuous(limits = c(37.75, 38.65)) +
  # annotation_north_arrow(location = "tl", which_north = "true",
  #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
  #                            style = north_arrow_fancy_orienteering) +
   #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
+   labs(title = "Phase 3") +
   theme_bw() +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
@@ -35,31 +72,43 @@ Region Phase 3
 
 Region Phase 1
 ```{r}
-(map <- ggplot() + 
-  geom_sf(data = WW_Delta, color = "black") +
-   geom_sf(data = R_EDSM_Regions_1819P1, aes(fill = Region), alpha= 0.2 ,inherit.aes = FALSE)+
+(map1 <- ggplot() + 
+  geom_sf(data = WW_Delta, color = "darkslategray3") +
+   geom_sf(data = R_EDSM_Regions_1819P1, aes(fill = Region), alpha= 0.4 ,inherit.aes = FALSE, color = "gray")+
+    geom_sf(data = survall, color = "gray40", size = 1) + 
+   geom_sf_text(data = survall, mapping = aes(label = Station), size = 2.5, nudge_x = -0.012, nudge_y = 0.02) + 
+     scale_x_continuous(limits = c(-122.45, -121.3)) + 
+   scale_y_continuous(limits = c(37.75, 38.65)) +
  
  # annotation_north_arrow(location = "tl", which_north = "true",
  #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
  #                            style = north_arrow_fancy_orienteering) +
   #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
+   labs(title = "Phase 1") +
   theme_bw() +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
         axis.text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45, vjust = 0.5)))
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        legend.position = "top"))
 ```
 
 
+Strata Phase 3
+
 ```{r}
-(map_s <- ggplot() + 
-  geom_sf(data = WW_Delta, color = "black") +
+(map_s3 <- ggplot() + 
+  geom_sf(data = WW_Delta, color = "darkslategray3") +
    geom_sf(data = R_EDSM_Strata_19P3, aes(fill = Stratum), alpha = 0.4,inherit.aes = FALSE)+
- 
+ geom_sf(data = survall, color = "gray40") + 
+   geom_sf_text(data = survall, mapping = aes(label = Station), size = 3, nudge_x = -0.05, nudge_y = 0.02) +
  # annotation_north_arrow(location = "tl", which_north = "true",
  #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
  #                            style = north_arrow_fancy_orienteering) +
   #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
+     scale_x_continuous(limits = c(-122.45, -121.3)) + 
+   scale_y_continuous(limits = c(37.75, 38.65)) +
+   labs(title = "Strata Phase 3") +
   theme_bw() +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
@@ -69,19 +118,56 @@ Region Phase 1
 
 
 ```{r}
-(map_s <- ggplot() + 
-  geom_sf(data = WW_Delta, color = "black") +
-   geom_sf(data = R_EDSM_Strata_1819P1, aes(fill = Stratum), alpha = 0.4,inherit.aes = FALSE)+
- 
+(map_s1 <- ggplot() + 
+  geom_sf(data = WW_Delta, color = "darkslategray3") +
+  geom_sf(data = R_EDSM_Strata_1819P1, aes(fill = Stratum, color = Stratum), alpha = 0.4,inherit.aes = FALSE)+
+  geom_sf(data = survall, color = "gray40", size = 1) + 
+   geom_sf_text(data = survall, mapping = aes(label = Station), size = 2.5, nudge_x = -0.012, nudge_y = 0.011) +
  # annotation_north_arrow(location = "tl", which_north = "true",
  #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
  #                            style = north_arrow_fancy_orienteering) +
   #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
+  scale_x_continuous(limits = c(-122.45, -121.3)) + 
+   scale_y_continuous(limits = c(37.75, 38.65)) + 
+   labs(title = "Strata Phase 1")+
   theme_bw() +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
         axis.text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45, vjust = 0.5)))
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        legend.position = "top"))
 ```
 
+
+```{r}
+png(here::here("figures","stations_strata_phase1.png"),
+     type="cairo",
+     units="in", 
+     width=8, 
+     height=7, 
+     pointsize=6, 
+     res=300)
+print(map_s1)
+dev.off()
+
+png(here::here("figures","stations_regions_phase1.png"),
+     type="cairo",
+     units="in", 
+     width=8, 
+     height=7, 
+     pointsize=5, 
+     res=300)
+print(map1)
+dev.off()
+
+```
+
+
+Interactive
+```{r}
+library(leaflet)
+library(mapview)
+mapView(survall, zcol = "Station", legend = FALSE, label = TRUE) +
+mapView(R_EDSM_Strata_1819P1, zcol = "Stratum") 
+```
 
