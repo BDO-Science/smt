@@ -70,29 +70,6 @@ Region Phase 3
         axis.text.x = element_text(angle = 45, vjust = 0.5)))
 ```
 
-Region Phase 1
-```{r}
-(map1 <- ggplot() + 
-  geom_sf(data = WW_Delta, color = "darkslategray3") +
-   geom_sf(data = R_EDSM_Regions_1819P1, aes(fill = Region), alpha= 0.4 ,inherit.aes = FALSE, color = "gray")+
-    geom_sf(data = survall, color = "gray40", size = 1) + 
-   geom_sf_text(data = survall, mapping = aes(label = Station), size = 2.5, nudge_x = -0.012, nudge_y = 0.02) + 
-     scale_x_continuous(limits = c(-122.45, -121.3)) + 
-   scale_y_continuous(limits = c(37.75, 38.65)) +
- 
- # annotation_north_arrow(location = "tl", which_north = "true",
- #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
- #                            style = north_arrow_fancy_orienteering) +
-  #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
-   labs(title = "Phase 1") +
-  theme_bw() +
-  theme(axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
-        axis.text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45, vjust = 0.5),
-        legend.position = "top"))
-```
-
 
 Strata Phase 3
 
@@ -117,48 +94,83 @@ Strata Phase 3
 ```
 
 
+Region Phase 1 - 2017-2018
 ```{r}
-(map_s1 <- ggplot() + 
+(map_r1 <- ggplot() + 
   geom_sf(data = WW_Delta, color = "darkslategray3") +
-  geom_sf(data = R_EDSM_Strata_1819P1, aes(fill = Stratum, color = Stratum), alpha = 0.4,inherit.aes = FALSE)+
-  geom_sf(data = survall, color = "gray40", size = 1) + 
-   geom_sf_text(data = survall, mapping = aes(label = Station), size = 2.5, nudge_x = -0.012, nudge_y = 0.011) +
+   geom_sf(data = R_EDSM_Regions_1718P1, aes(fill = Region), alpha = 0.5,inherit.aes = FALSE)+
+ geom_sf(data = survall, color = "gray30", size = 0.7) + 
+   geom_sf_text(data = survall, mapping = aes(label = Station), size = 2.5, nudge_x = -0.012, nudge_y = 0.016) +
  # annotation_north_arrow(location = "tl", which_north = "true",
  #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
  #                            style = north_arrow_fancy_orienteering) +
   #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
-  scale_x_continuous(limits = c(-122.45, -121.3)) + 
-   scale_y_continuous(limits = c(37.75, 38.65)) + 
-   labs(title = "Strata Phase 1")+
+     scale_x_continuous(limits = c(-122.45, -121.3)) + 
+   scale_y_continuous(limits = c(37.75, 38.65)) +
+   viridis::scale_fill_viridis(option = "turbo", discrete = TRUE) + 
+   labs(title = "Region Phase 1 2017-2018") +
   theme_bw() +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
-        axis.text = element_text(size = 12),
+        axis.text = element_text(size = 10),
         axis.text.x = element_text(angle = 45, vjust = 0.5),
         legend.position = "top"))
 ```
 
 
+
+Strata Phase 1 (older; includes upper sac) - 2017-2018
 ```{r}
+(map_s1 <- ggplot() + 
+  geom_sf(data = WW_Delta, color = "darkslategray3") +
+   geom_sf(data = R_EDSM_Strata_1718P1, aes(fill = Stratum), alpha = 0.5,inherit.aes = FALSE)+
+ geom_sf(data = survall, color = "gray30", size = 0.7) + 
+   geom_sf_text(data = survall, mapping = aes(label = Station), size = 2.5, nudge_x = -0.012, nudge_y = 0.016) +
+ # annotation_north_arrow(location = "tl", which_north = "true",
+ #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
+ #                            style = north_arrow_fancy_orienteering) +
+  #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
+     scale_x_continuous(limits = c(-122.45, -121.3)) + 
+   scale_y_continuous(limits = c(37.75, 38.65)) +
+   viridis::scale_fill_viridis(option = "turbo", discrete = TRUE) + 
+   labs(title = "Strata Phase 1 2017-2018") +
+  theme_bw() +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        legend.position = "top"))
+
+
+```
+
+
+
+
+
+
+```{r}
+png(here::here("figures","stations_regions_phase1.png"),
+     type="cairo",
+     units="in", 
+     width=7, 
+     height=7, 
+     pointsize=5, 
+     res=300)
+print(map_r1)
+dev.off()
+
 png(here::here("figures","stations_strata_phase1.png"),
      type="cairo",
      units="in", 
-     width=8, 
+     width=9, 
      height=7, 
      pointsize=6, 
      res=300)
 print(map_s1)
 dev.off()
 
-png(here::here("figures","stations_regions_phase1.png"),
-     type="cairo",
-     units="in", 
-     width=8, 
-     height=7, 
-     pointsize=5, 
-     res=300)
-print(map1)
-dev.off()
+
 
 ```
 
