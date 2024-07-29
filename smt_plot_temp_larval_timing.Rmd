@@ -48,7 +48,7 @@ smelt_timing <- read_excel("data_raw/larval_smelt_timing.xlsx") %>%
 # Water temp
 stations_temp <- c("BLP", "HLT", "HOL")
 # Copied over data from another synthesis project with QA/QCed water temp data. Code available: https://github.com/catarfish/heatwaves
-
+stations_temp <- c("SJJ", "RVB")
 temp <- readRDS("data_clean/Temp_filtered.rds") %>%
   filter(Station %in% stations_temp) 
 latlons <- read.csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.591.2&entityid=a059f5eea4f8500fe1a43566451ec593")
@@ -75,17 +75,18 @@ temp_daily <- temp_sum %>%
   mutate(date2 = paste0(1980, "-", month, "-", day(date)),
          date2 = lubridate::ymd(date2)) %>%
   filter(!is.na(date)) %>%
-  ungroup() %>%
   left_join(wytype) %>%
   mutate(fWY = factor(wy),
          index = 1:n()) %>%
   rename(wytype = SacramentoValley) %>%
   select(index, everything()) %>%
   select(-SanJoaquinValley) %>%
-  filter(!is.na(wytype), (month >1 & month < 6), wy > 2008 & wy< 2020) %>%
+  filter(!is.na(wytype), (month >1 & month < 6), wy > 2008 & wy< 2024) %>%
    mutate(wytype = factor(wytype, levels = c("W", "AN", "BN","D", "C")),
           fWY = factor(wy),
-          over12 = ifelse(meanTemp > 12, 20, 0)) # label if over 12 degrees
+          over12 = ifelse(meanTemp > 12, 20, 0)) # label if over 12 degrees %>%
+
+
 
 # Find the first date of reaching 12 degrees for each year/station       
 firsttemp <- temp_daily %>%
@@ -95,6 +96,54 @@ firsttemp <- temp_daily %>%
   rename(date2 = firstdate)                                      
 ```
 
+3-day stats and plot
+```{r}
+library(zoo)
+temp_3day <- temp_daily %>%
+  mutate(mean3day = rollapply(meanTemp, 3, mean, partial = TRUE, align = "right", na.rm = TRUE))
+
+# Find the first date of reaching 12 degrees for each year/station       
+firsttemp_3day <- temp_3day %>%
+  filter(over12 == 20) %>%
+  group_by(station, wy, fWY) %>%
+  summarize(firstdate = min(date2)) %>%
+  rename(date2 = firstdate)    
+
+plot_temp_3day <- ggplot2::ggplot()+
+  ggplot2::theme_bw()+
+  ggplot2::geom_line(data=temp_3day, aes(x=date2,y=meanTemp,color=station, linetype = wytype), size = 0.5)+
+  # ggplot2::geom_vline(data=smelt_timing, aes(xintercept = date2))+
+  ggplot2::geom_vline(xintercept = ymd("1980-04-01")) +
+  ggplot2::geom_hline(yintercept = 12)+
+  ggplot2::geom_point(data = firsttemp_3day, aes(x = date2, y = 12, color = station), size = 5, shape = 18) + facet_wrap(~fWY, strip.position = "left", nrow = 13)+
+  ggplot2::scale_colour_manual(values = c("red", "darkblue")) +
+  ggplot2::scale_linetype_manual(values = c("dotted", "solid", "twodash", "longdash")) +
+  ggplot2::theme(plot.title=element_text(size=10), 
+                 axis.text.x=element_text(size=10, color="black",angle=90), 
+                 axis.text.y = element_text(size=10, color="black"), 
+                 axis.title.x = element_text(size = 10, angle = 00), 
+                 axis.title.y = element_text(size = 10, angle = 90),
+                 strip.text = element_text(size = 10),
+                 legend.position = "top",
+                 strip.background = element_rect(size=0.3)) + 
+  ggplot2::theme(strip.placement = "outside")+
+  ggplot2::ylab("3-Day Average Average Water Temperature (°C)")+
+  ggplot2::xlab(NULL)+
+  ggplot2::scale_x_date(date_labels = "%b",date_breaks  ="1 month") +
+  theme(legend.key.size = unit(3,"line"))
+
+plot_temp_3day
+
+png(here("figures","temp_larvaldetection_3dayavg.png"),
+     type="cairo",
+     units="in", 
+     width=6, 
+     height=6.5, 
+     pointsize=5, 
+     res=300)
+print(plot_temp_3day)
+dev.off()
+```
 
 ### Plot data
 ```{r}
@@ -103,7 +152,7 @@ plot_temp <- ggplot2::ggplot()+
   ggplot2::geom_line(data=temp_daily, aes(x=date2,y=meanTemp,color=station, linetype = wytype), size = 0.5)+
   ggplot2::geom_vline(data=smelt_timing, aes(xintercept = date2))+
   ggplot2::geom_hline(yintercept = 12)+
-  ggplot2::geom_point(data = firsttemp, aes(x = date2, y = 12, color = station), size = 2, shape = 5) + facet_wrap(~fWY, strip.position = "left", nrow = 11)+
+  ggplot2::geom_point(data = firsttemp, aes(x = date2, y = 12, color = station), size = 2, shape = 5) + facet_wrap(~fWY, strip.position = "left", nrow = 13)+
   ggplot2::scale_colour_manual(values = c("orange3", "aquamarine3", "darkblue")) +
   ggplot2::scale_linetype_manual(values = c("dotted", "solid", "twodash", "longdash")) +
   ggplot2::theme(plot.title=element_text(size=10), 
