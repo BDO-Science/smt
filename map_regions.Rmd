@@ -21,13 +21,16 @@ library(sf)
 
 Save 20mm and SLS stations
 ```{r}
-surv <- open_survey()
-surv_20_sls <- surv %>%
-  filter(Source %in% c("20mm", "SLS")) %>%
+# clear_cache()
+# create_fish_db()
+con <- open_database()
+surv <- open_survey(con)
+surv_20_sls_bay <- surv %>%
+  filter(Source %in% c("20mm", "SLS", "Bay Study")) %>%
   select(Station, Latitude, Longitude, Source) %>%
   collect()
 
-survloc_sf <- surv_20_sls %>% 
+survloc_sf <- surv_20_sls_bay %>% 
   distinct() %>%
   filter(!is.na(Longitude)) %>%
   st_as_sf(coords = c("Longitude", "Latitude"),
@@ -46,6 +49,10 @@ sls <- survloc_sf %>%
   filter(Source == "SLS") %>%
   distinct()
 
+bay <- survloc_sf %>%
+  filter(Source == "Bay Study") %>%
+  distinct()
+
 
 ```
 
@@ -57,7 +64,7 @@ Region Phase 3
    geom_sf(data = survall, color = "gray40") + 
    geom_sf_text(data = survall, mapping = aes(label = Station), size = 3, nudge_x = -0.012, nudge_y = 0.02) + 
      scale_x_continuous(limits = c(-122.45, -121.3)) + 
-   scale_y_continuous(limits = c(37.75, 38.65)) +
+   scale_y_continuous(limits = c(37.73, 38.65)) +
  # annotation_north_arrow(location = "tl", which_north = "true",
  #                            pad_x = unit(.1, "in"), pad_y = unit(0.2, "in"),
  #                            style = north_arrow_fancy_orienteering) +
@@ -106,7 +113,7 @@ Region Phase 1 - 2017-2018
  #                            style = north_arrow_fancy_orienteering) +
   #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
      scale_x_continuous(limits = c(-122.45, -121.3)) + 
-   scale_y_continuous(limits = c(37.75, 38.65)) +
+   scale_y_continuous(limits = c(37.5, 38.65)) +
    viridis::scale_fill_viridis(option = "turbo", discrete = TRUE) + 
    labs(title = "Region Phase 1 2017-2018") +
   theme_bw() +
@@ -131,7 +138,7 @@ Strata Phase 1 (older; includes upper sac) - 2017-2018
  #                            style = north_arrow_fancy_orienteering) +
   #    annotation_scale(location = "bl", bar_cols = c("black", "white", "black", "white")) +
      scale_x_continuous(limits = c(-122.45, -121.3)) + 
-   scale_y_continuous(limits = c(37.75, 38.65)) +
+   scale_y_continuous(limits = c(37.5, 38.65)) +
    viridis::scale_fill_viridis(option = "turbo", discrete = TRUE) + 
    labs(title = "Strata Phase 1 2017-2018") +
   theme_bw() +
@@ -174,6 +181,16 @@ dev.off()
 
 ```
 
+```{r}
+survall_sf <- st_transform(survall, crs = st_crs(R_EDSM_Strata_1718P1))
+station_stratum <- st_join(survall_sf, R_EDSM_Strata_1718P1) %>%
+  mutate(Stratum = replace(Stratum, is.na(Stratum) & Source == "Bay Study", "Bay"))
+station_regions <- st_join(survall_sf, R_EDSM_Regions_1718P1) %>%
+  mutate(Region = replace(Region, is.na(Region) & Source == "Bay Study", "Bay"))
+
+readr::write_csv(station_stratum, here::here("data_clean/station_stratum_crosswalk.csv"))
+readr::write_csv(station_regions, here::here("data_clean/station_region_crosswalk.csv"))
+```
 
 Interactive
 ```{r}
