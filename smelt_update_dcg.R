@@ -46,7 +46,7 @@ releases <- read_excel(here("data_raw", "Releases_2025.xlsx")) %>%
         axis.title = element_text(size = 13),
         legend.title = element_text(size = 13)))
 
-png(here("figures/releases_2025_plot.png"), width = 7, height = 5, units = "in", res = 300)
+png(here("figures/dcg_update/releases_2025_plot.png"), width = 7, height = 5, units = "in", res = 300)
 release_summary_plot
 dev.off()
 
@@ -98,7 +98,7 @@ releases_sf <- releases %>%
           legend.text = element_text(size = 8)) +
   guides(size = "none"))
 
-png(here("figures/detections_2025_plot.png"), width = 6, height = 6, units = "in", res = 300)
+png(here("figures/dcg_update/detections_2025_plot.png"), width = 6, height = 6, units = "in", res = 300)
 map_detections_a
 dev.off()
 
@@ -121,7 +121,7 @@ ds_release_sf <- left_join(ds_sf, releases %>% select(c(mark_code, release_name)
         legend.text = element_text(size = 10)) +
   guides(fill = guide_legend(nrow = 3)))
 
-png(here("figures/release_detections_2025_plot.png"), width = 6, height = 6, units = "in", res = 300)
+png(here("figures/dcg_update/release_detections_2025_plot.png"), width = 6, height = 6, units = "in", res = 300)
 release_barplot
 dev.off()
 
@@ -150,7 +150,7 @@ lfs_chipps <-  read_excel(here("data_raw", "lfs_chipps_2025.xlsx")) %>%
           axis.title = element_text(size = 13),
           legend.title = element_text(size = 13)))
 
-png(here("figures/lfs_chipps_plot.png"), width = 7, height = 5, units = "in", res = 300)
+png(here("figures/dcg_update/lfs_chipps_plot.png"), width = 7, height = 5, units = "in", res = 300)
 lfs_chipps_plot
 dev.off()
 
@@ -198,7 +198,7 @@ lfs_edsm_sf <- lfs_edsm %>%
           legend.text = element_text(size = 8)) +
     guides(size = "none"))
 
-png(here("figures/lfs_edsm_map.png"), width = 7, height = 5, units = "in", res = 300)
+png(here("figures/dcg_update/lfs_edsm_map.png"), width = 7, height = 5, units = "in", res = 300)
 map_detections_lfs_edsm
 dev.off()
 
@@ -254,7 +254,7 @@ lfs_larval_dates <- lfs_larval_sta %>%
            shape = "none",
            color = "none"))
 
-png(here("figures/lfs_sls_map.png"), width = 7, height = 5, units = "in", res = 300)
+png(here("figures/dcg_update/lfs_sls_map.png"), width = 7, height = 5, units = "in", res = 300)
 map_detections_lfs_l
 dev.off()
 
@@ -271,7 +271,7 @@ dev.off()
           legend.title = element_blank())+
   guides(fill=guide_legend(nrow=5, byrow = TRUE)))
 
-png(here("figures/lfs_sls_barplot.png"), width = 7, height = 5, units = "in", res = 300)
+png(here("figures/dcg_update/lfs_sls_barplot.png"), width = 7, height = 5, units = "in", res = 300)
 lfs_sls_barplot
 dev.off()
 
