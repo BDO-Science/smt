@@ -25,6 +25,7 @@ turb<- CDECquery("HOL", "221", "H", start = startDate,
          date2 = if_else(h == 0, date-1, date))
 
 # Calculate daily average
+# This is the one we want to use
 turb_avg_0100 <- turb %>%
   group_by(date2) %>%
   summarize(mean = mean(value))
@@ -46,3 +47,35 @@ OBI<- CDECquery("OBI", "221", "E", start = startDate,
 obi_avg <- OBI %>%
   group_by(date2) %>%
   summarize(mean = mean(value))
+
+
+
+
+
+# Also checking temperature calculations --------------------------
+
+# Pull data and reassign dates
+temp<- CDECquery("RVB", "25", "H", start = startDate,
+                 end = endDate) %>%
+  mutate(datetime = format(as.POSIXct(datetime), "%Y-%m-%d %H:%M:%S"),
+         h = hour(datetime)) %>%
+  filter(!is.na(datetime)) %>%
+  mutate(date = date(datetime),
+         date2 = if_else(h == 0, date-1, date))
+
+# Calculate daily average
+# This is the one we want to use
+library(zoo)
+temp_avg_0100 <- temp %>%
+  group_by(date2) %>%
+  summarize(meanC = (mean(value)-32) *5/9,
+            n = n()) %>%
+  ungroup()
+
+threeday <- temp_avg_0100 %>%
+  mutate(threeday = zoo::rollapply(meanC, 3, mean, align = 'right', partial = TRUE))
+
+temp_avg_0000 <- temp %>%
+  group_by(date) %>%
+  summarize(meanC = (mean(value)-32) *5/9) %>%
+  ungroup()
