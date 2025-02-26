@@ -48,7 +48,7 @@ smelt_timing <- read_excel("data_raw/larval_smelt_timing.xlsx") %>%
 # Water temp
 stations_temp <- c("BLP", "HLT", "HOL")
 # Copied over data from another synthesis project with QA/QCed water temp data. Code available: https://github.com/catarfish/heatwaves
-stations_temp <- c("SJJ", "RVB")
+stations_temp <- c("SJJ", "RVB", "JER")
 temp <- readRDS("data_clean/Temp_filtered.rds") %>%
   filter(Station %in% stations_temp) 
 latlons <- read.csv("https://portal.edirepository.org/nis/dataviewer?packageid=edi.591.2&entityid=a059f5eea4f8500fe1a43566451ec593")
@@ -112,11 +112,11 @@ firsttemp_3day <- temp_3day %>%
 plot_temp_3day <- ggplot2::ggplot()+
   ggplot2::theme_bw()+
   ggplot2::geom_line(data=temp_3day, aes(x=date2,y=meanTemp,color=station, linetype = wytype), size = 0.5)+
-  # ggplot2::geom_vline(data=smelt_timing, aes(xintercept = date2))+
-  ggplot2::geom_vline(xintercept = ymd("1980-04-01")) +
+  ggplot2::geom_vline(data=smelt_timing, aes(xintercept = date2))+
+  # ggplot2::geom_vline(xintercept = ymd("1980-04-01")) +
   ggplot2::geom_hline(yintercept = 12)+
-  ggplot2::geom_point(data = firsttemp_3day, aes(x = date2, y = 12, color = station), size = 5, shape = 18) + facet_wrap(~fWY, strip.position = "left", nrow = 13)+
-  ggplot2::scale_colour_manual(values = c("red", "darkblue")) +
+  ggplot2::geom_point(data = firsttemp_3day, aes(x = date2, y = 12, color = station), alpha = 0.7, size = 5, shape = 18) + facet_wrap(~fWY, strip.position = "left", nrow = 13)+
+  ggplot2::scale_colour_manual(values = c("red", "darkblue", "orange")) +
   ggplot2::scale_linetype_manual(values = c("dotted", "solid", "twodash", "longdash")) +
   ggplot2::theme(plot.title=element_text(size=10), 
                  axis.text.x=element_text(size=10, color="black",angle=90), 
@@ -129,7 +129,7 @@ plot_temp_3day <- ggplot2::ggplot()+
   ggplot2::theme(strip.placement = "outside")+
   ggplot2::ylab("3-Day Average Average Water Temperature (°C)")+
   ggplot2::xlab(NULL)+
-  ggplot2::scale_x_date(date_labels = "%b",date_breaks  ="1 month") +
+  ggplot2::scale_x_date(date_labels = "%b-%d",date_breaks  ="2 weeks") +
   theme(legend.key.size = unit(3,"line"))
 
 plot_temp_3day
@@ -137,7 +137,7 @@ plot_temp_3day
 png(here("figures","temp_larvaldetection_3dayavg.png"),
      type="cairo",
      units="in", 
-     width=6, 
+     width=6.5, 
      height=6.5, 
      pointsize=5, 
      res=300)
@@ -150,7 +150,8 @@ dev.off()
 plot_temp <- ggplot2::ggplot()+
   ggplot2::theme_bw()+
   ggplot2::geom_line(data=temp_daily, aes(x=date2,y=meanTemp,color=station, linetype = wytype), size = 0.5)+
-  ggplot2::geom_vline(data=smelt_timing, aes(xintercept = date2))+
+  # ggplot2::geom_vline(data=smelt_timing, aes(xintercept = date2))+
+  ggplot2::geom_vline(data=smelt_timing, aes(xintercept = ymd(date2)))+
   ggplot2::geom_hline(yintercept = 12)+
   ggplot2::geom_point(data = firsttemp, aes(x = date2, y = 12, color = station), size = 2, shape = 5) + facet_wrap(~fWY, strip.position = "left", nrow = 13)+
   ggplot2::scale_colour_manual(values = c("orange3", "aquamarine3", "darkblue")) +
