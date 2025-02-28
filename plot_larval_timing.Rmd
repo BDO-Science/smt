@@ -46,8 +46,9 @@ Surveys included in this calculation:
 
 ```{r data, echo=TRUE, message=FALSE, warning=FALSE}
 #Use deltafish to load data
-surv <- open_survey()
-fish <- open_fish()
+con <- open_database()
+surv <- open_survey(con)
+fish <- open_fish(con)
 # filter for taxa of interest
 fish_deltasmelt <- fish %>% 
   filter(Taxa %in% c("Hypomesus transpacificus"))
@@ -322,5 +323,7 @@ dev.off()
 
 ```{r}
 table <- data_deltasmelt_larvae_sum %>% filter(CustomRegion=="Central and South Delta") %>% ungroup() %>% select(-CustomRegion) %>% filter(broodyear>2010)
+
+table2 <- data_deltasmelt_larvae_sum %>%  ungroup() %>% select(-CustomRegion) %>% filter(broodyear>2010)
 ```
 
