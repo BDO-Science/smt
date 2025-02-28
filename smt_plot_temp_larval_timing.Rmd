@@ -43,7 +43,7 @@ smelt_timing <- read_excel("data_raw/larval_smelt_timing.xlsx") %>%
          date2 = lubridate::ymd(date2),
          wy = year(x0),
          fWY = factor(wy))%>%
-  filter(wy > 2008 & wy< 2020) 
+  filter(wy > 2008) 
 
 # Water temp
 stations_temp <- c("BLP", "HLT", "HOL")
@@ -86,14 +86,26 @@ temp_daily <- temp_sum %>%
           fWY = factor(wy),
           over12 = ifelse(meanTemp > 12, 20, 0)) # label if over 12 degrees %>%
 
-
-
 # Find the first date of reaching 12 degrees for each year/station       
 firsttemp <- temp_daily %>%
   filter(over12 == 20) %>%
   group_by(station, wy, fWY) %>%
   summarize(firstdate = min(date2)) %>%
   rename(date2 = firstdate)                                      
+```
+
+```{r}
+firsttemp_table <- firsttemp %>%
+  mutate(date = ymd(paste0(wy, "-", month(date2),"-", day(date2)))) %>%
+  select(-date2, -fWY) %>%
+  pivot_wider(names_from = "station", values_from = "date") 
+firsttemp_larval_difference <- firsttemp_table %>%
+  left_join(smelt_timing, by = "wy") %>%
+  mutate(x0 = date(x0)) %>%
+  mutate(timediff = x0-RVB)
+
+mean(firsttemp_larval_difference$timediff, na.rm = TRUE)
+write_csv(firsttemp_larval_difference, "data_clean/table_dates_exceed12_firstlarvaldetect.csv")
 ```
 
 3-day stats and plot
@@ -111,12 +123,14 @@ firsttemp_3day <- temp_3day %>%
 
 plot_temp_3day <- ggplot2::ggplot()+
   ggplot2::theme_bw()+
+  geom_label(data = firsttemp_3day%>% filter(station == "RVB"), aes(x = date2+2, y = 16, label = paste("RVB:",format(date2, "%m/%d"))), color = "darkblue" , size = 3)+
   ggplot2::geom_line(data=temp_3day, aes(x=date2,y=meanTemp,color=station, linetype = wytype), size = 0.5)+
+  geom_label(data = smelt_timing , aes(x = date2-14, y = 21, label = paste("DS:", format(date2, "%m/%d")))) +
   ggplot2::geom_vline(data=smelt_timing, aes(xintercept = date2))+
   # ggplot2::geom_vline(xintercept = ymd("1980-04-01")) +
   ggplot2::geom_hline(yintercept = 12)+
   ggplot2::geom_point(data = firsttemp_3day, aes(x = date2, y = 12, color = station), alpha = 0.7, size = 5, shape = 18) + facet_wrap(~fWY, strip.position = "left", nrow = 13)+
-  ggplot2::scale_colour_manual(values = c("red", "darkblue", "orange")) +
+  ggplot2::scale_colour_manual(values = c("orange","darkblue", "red" )) +
   ggplot2::scale_linetype_manual(values = c("dotted", "solid", "twodash", "longdash")) +
   ggplot2::theme(plot.title=element_text(size=10), 
                  axis.text.x=element_text(size=10, color="black",angle=90), 
@@ -137,8 +151,8 @@ plot_temp_3day
 png(here("figures","temp_larvaldetection_3dayavg.png"),
      type="cairo",
      units="in", 
-     width=6.5, 
-     height=6.5, 
+     width=9, 
+     height=7, 
      pointsize=5, 
      res=300)
 print(plot_temp_3day)
