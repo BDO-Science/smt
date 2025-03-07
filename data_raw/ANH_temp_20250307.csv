@@ -1,0 +1,137 @@
+year,mm-dd,location,parameter,unit,datatype,value
+2025,1-Jan,ANH,wtemp,F,WaterTemperature,51.742
+2025,2-Jan,ANH,wtemp,F,WaterTemperature,51.667
+2025,3-Jan,ANH,wtemp,F,WaterTemperature,51.792
+2025,4-Jan,ANH,wtemp,F,WaterTemperature,51.686
+2025,5-Jan,ANH,wtemp,F,WaterTemperature,51.629
+2025,6-Jan,ANH,wtemp,F,WaterTemperature,51.554
+2025,7-Jan,ANH,wtemp,F,WaterTemperature,51.25
+2025,8-Jan,ANH,wtemp,F,WaterTemperature,51.139
+2025,9-Jan,ANH,wtemp,F,WaterTemperature,51.133
+2025,10-Jan,ANH,wtemp,F,WaterTemperature,51.129
+2025,11-Jan,ANH,wtemp,F,WaterTemperature,50.879
+2025,12-Jan,ANH,wtemp,F,WaterTemperature,50.4
+2025,13-Jan,ANH,wtemp,F,WaterTemperature,50.092
+2025,14-Jan,ANH,wtemp,F,WaterTemperature,49.871
+2025,15-Jan,ANH,wtemp,F,WaterTemperature,49.737
+2025,16-Jan,ANH,wtemp,F,WaterTemperature,49.767
+2025,17-Jan,ANH,wtemp,F,WaterTemperature,49.767
+2025,18-Jan,ANH,wtemp,F,WaterTemperature,49.8
+2025,19-Jan,ANH,wtemp,F,WaterTemperature,49.783
+2025,20-Jan,ANH,wtemp,F,WaterTemperature,49.646
+2025,21-Jan,ANH,wtemp,F,WaterTemperature,49.547
+2025,22-Jan,ANH,wtemp,F,WaterTemperature,49.696
+2025,23-Jan,ANH,wtemp,F,WaterTemperature,49.808
+2025,24-Jan,ANH,wtemp,F,WaterTemperature,49.863
+2025,25-Jan,ANH,wtemp,F,WaterTemperature,49.546
+2025,26-Jan,ANH,wtemp,F,WaterTemperature,49.229
+2025,27-Jan,ANH,wtemp,F,WaterTemperature,49.15
+2025,28-Jan,ANH,wtemp,F,WaterTemperature,49.129
+2025,29-Jan,ANH,wtemp,F,WaterTemperature,49.154
+2025,30-Jan,ANH,wtemp,F,WaterTemperature,49.15
+2025,31-Jan,ANH,wtemp,F,WaterTemperature,49.054
+2025,1-Feb,ANH,wtemp,F,WaterTemperature,49.108
+2025,2-Feb,ANH,wtemp,F,WaterTemperature,49.625
+2025,3-Feb,ANH,wtemp,F,WaterTemperature,50.167
+2025,4-Feb,ANH,wtemp,F,WaterTemperature,50.475
+2025,5-Feb,ANH,wtemp,F,WaterTemperature,50.592
+2025,6-Feb,ANH,wtemp,F,WaterTemperature,50.546
+2025,7-Feb,ANH,wtemp,F,WaterTemperature,50.867
+2025,8-Feb,ANH,wtemp,F,WaterTemperature,51.042
+2025,9-Feb,ANH,wtemp,F,WaterTemperature,50.8
+2025,10-Feb,ANH,wtemp,F,WaterTemperature,50.479
+2025,11-Feb,ANH,wtemp,F,WaterTemperature,50.05
+2025,12-Feb,ANH,wtemp,F,WaterTemperature,49.679
+2025,13-Feb,ANH,wtemp,F,WaterTemperature,49.546
+2025,14-Feb,ANH,wtemp,F,WaterTemperature,49.917
+2025,15-Feb,ANH,wtemp,F,WaterTemperature,50.029
+2025,16-Feb,ANH,wtemp,F,WaterTemperature,50.4
+2025,17-Feb,ANH,wtemp,F,WaterTemperature,50.579
+2025,18-Feb,ANH,wtemp,F,WaterTemperature,50.742
+2025,19-Feb,ANH,wtemp,F,WaterTemperature,51.4
+2025,20-Feb,ANH,wtemp,F,WaterTemperature,51.792
+2025,21-Feb,ANH,wtemp,F,WaterTemperature,52.196
+2025,22-Feb,ANH,wtemp,F,WaterTemperature,52.663
+2025,23-Feb,ANH,wtemp,F,WaterTemperature,53.163
+2025,24-Feb,ANH,wtemp,F,WaterTemperature,53.65
+2025,25-Feb,ANH,wtemp,F,WaterTemperature,54.2
+2025,26-Feb,ANH,wtemp,F,WaterTemperature,54.683
+2025,27-Feb,ANH,wtemp,F,WaterTemperature,54.971
+2025,28-Feb,ANH,wtemp,F,WaterTemperature,55.196
+2025,Feb-29,ANH,wtemp,F,WaterTemperature,NA
+2025,1-Mar,ANH,wtemp,F,WaterTemperature,55.371
+2025,2-Mar,ANH,wtemp,F,WaterTemperature,55.275
+2025,3-Mar,ANH,wtemp,F,WaterTemperature,54.788
+2025,4-Mar,ANH,wtemp,F,WaterTemperature,54.963
+2025,5-Mar,ANH,wtemp,F,WaterTemperature,55.1
+2025,6-Mar,ANH,wtemp,F,WaterTemperature,54.813
+2025,7-Mar,ANH,wtemp,F,WaterTemperature,NA
+2025,8-Mar,ANH,wtemp,F,WaterTemperature,NA
+Avg15-24,1-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,48.962
+Avg15-24,2-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,48.762
+Avg15-24,3-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,48.718
+Avg15-24,4-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,48.826
+Avg15-24,5-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,48.976
+Avg15-24,6-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,48.968
+Avg15-24,7-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,48.918
+Avg15-24,8-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,48.988
+Avg15-24,9-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,49.163
+Avg15-24,10-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,49.23
+Avg15-24,11-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,49.34
+Avg15-24,12-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,49.499
+Avg15-24,13-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,49.611
+Avg15-24,14-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,49.731
+Avg15-24,15-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,49.756
+Avg15-24,16-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,49.804
+Avg15-24,17-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,49.938
+Avg15-24,18-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.076
+Avg15-24,19-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.106
+Avg15-24,20-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.083
+Avg15-24,21-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.095
+Avg15-24,22-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.168
+Avg15-24,23-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.22
+Avg15-24,24-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.299
+Avg15-24,25-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.408
+Avg15-24,26-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.554
+Avg15-24,27-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.7
+Avg15-24,28-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.847
+Avg15-24,29-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,50.972
+Avg15-24,30-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,51.088
+Avg15-24,31-Jan,ANH,10YrAvg wtemp,F,WaterTempAvg,51.201
+Avg15-24,1-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,51.191
+Avg15-24,2-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,51.171
+Avg15-24,3-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,51.19
+Avg15-24,4-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,51.205
+Avg15-24,5-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,51.324
+Avg15-24,6-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,51.487
+Avg15-24,7-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,51.684
+Avg15-24,8-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,51.925
+Avg15-24,9-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.1
+Avg15-24,10-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.247
+Avg15-24,11-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.302
+Avg15-24,12-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.363
+Avg15-24,13-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.516
+Avg15-24,14-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.674
+Avg15-24,15-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.749
+Avg15-24,16-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.842
+Avg15-24,17-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.918
+Avg15-24,18-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,53.005
+Avg15-24,19-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,53.065
+Avg15-24,20-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,53.158
+Avg15-24,21-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,53.243
+Avg15-24,22-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,53.179
+Avg15-24,23-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.95
+Avg15-24,24-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,52.968
+Avg15-24,25-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,53.144
+Avg15-24,26-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,53.314
+Avg15-24,27-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,53.413
+Avg15-24,28-Feb,ANH,10YrAvg wtemp,F,WaterTempAvg,53.568
+Avg15-24,Feb-29,ANH,10YrAvg wtemp,F,WaterTempAvg,56.917
+Avg15-24,1-Mar,ANH,10YrAvg wtemp,F,WaterTempAvg,53.744
+Avg15-24,2-Mar,ANH,10YrAvg wtemp,F,WaterTempAvg,53.788
+Avg15-24,3-Mar,ANH,10YrAvg wtemp,F,WaterTempAvg,53.968
+Avg15-24,4-Mar,ANH,10YrAvg wtemp,F,WaterTempAvg,54.109
+Avg15-24,5-Mar,ANH,10YrAvg wtemp,F,WaterTempAvg,54.234
+Avg15-24,6-Mar,ANH,10YrAvg wtemp,F,WaterTempAvg,54.351
+Avg15-24,7-Mar,ANH,10YrAvg wtemp,F,WaterTempAvg,54.48
+Avg15-24,8-Mar,ANH,10YrAvg wtemp,F,WaterTempAvg,54.589
