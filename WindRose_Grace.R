@@ -95,12 +95,12 @@ wsd2 <- wsd2 %>%
 
 ###############
 # ✅ Composite Daily Wind Rose (panel per day, may have some label overlap)
-windRose(wsd2, 
-         ws = "wind.spd.mph", 
-         wd = "wind.dir.deg", 
+windRose(wsd2,
+         ws = "wind.spd.mph",
+         wd = "wind.dir.deg",
          type = "date",
          angle = 10,
-         cols = c("tan", "light blue", "dark blue", "dark green", "orange"), 
+         cols = c("tan", "light blue", "dark blue", "dark green", "orange"),
          grid.line = 5,
          breaks = c(0, 10, 20, 30, 40, 50),
          paddle = FALSE,
@@ -108,12 +108,29 @@ windRose(wsd2,
 
 ###############
 # ✅ Overall Wind Rose (all 14 days combined into one rose)
-windRose(wsd2, 
-         ws = "wind.spd.mph", 
-         wd = "wind.dir.deg", 
+windRose(wsd2,
+         ws = "wind.spd.mph",
+         wd = "wind.dir.deg",
          angle = 10,
-         cols = c("tan", "light blue", "dark blue", "dark green", "orange"), 
+         cols = c("tan", "light blue", "dark blue", "dark green", "orange"),
          grid.line = 5,
          breaks = c(0, 10, 20, 30, 40, 50),
          paddle = FALSE,
          key.header = "This is in MPH not Meters/second")
+
+##############
+# Write wind rose image
+
+png(here::here(paste0("figures/wind_rose_",theDATE,".png")),
+    width = 8, height = 6, units = "in", res = 300)
+
+windRose(wsd2,
+         ws = "wind.spd.mph",
+         wd = "wind.dir.deg",
+         angle = 10,
+         cols = c("tan", "light blue", "dark blue", "dark green", "orange"),
+         grid.line = 5,
+         breaks = c(0, 10, 20, 30, 40, 50),
+         paddle = FALSE,
+         key.header = "This is in MPH not Meters/second")
+dev.off()
