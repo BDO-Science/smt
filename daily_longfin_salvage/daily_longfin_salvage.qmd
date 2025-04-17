@@ -22,6 +22,7 @@ library(readxl)
 -   Assigned Life Stage (Adult \> 60mm; Juvenile \<= 60 mm)
 -   Cumulative Salvage represents fish count/sample fraction
 
+
 ```{r}
 lfs_data <- read_excel("WY2025_smelt_catch.xlsx", sheet = 2)  %>%
   clean_names()
@@ -88,9 +89,9 @@ current = max(df_juv_2025$cumulative_salvage)
     geom_hline(yintercept = 927, linetype = "dashed")+
     annotate(geom = "text", x = ymd("1981-03-10"), y = 450, label = "50% Threshold: 620")+ 
     annotate(geom = "text", x = ymd("1981-03-10"), y = 1100, label = "75% Threshold: 927")+ 
-  annotate(geom = "text", x = ymd("1981-03-20"), y = 6500,size = 4, label = paste0("Current 2025 \nCumulative Salvage:", current))+ 
-    annotate("rect", xmin = ymd("1981-03-04"), xmax = ymd("1981-04-05"), ymin = 6000, ymax = 7000, fill = NA, color = "black")+
-  labs(x = "Date", color = "Water Year", shape = "Water Year", y = "Cumulative LFS Salvage\n(expanded)", title = "Longfin Smelt Salvage\nWY 2014-2025") +
+  annotate(geom = "text", x = ymd("1981-03-20"), y = 6500,size = 4, label = paste0("Current 2025 \nCumulative Salvage:", current,"\n(as of ", format(today(), "%m/%d"),")"))+ 
+    annotate("rect", xmin = ymd("1981-03-04"), xmax = ymd("1981-04-05"), ymin = 5850, ymax = 7150, fill = NA, color = "black")+
+  labs(x = "Date", color = "Water Year", shape = "Water Year", y = "Cumulative LFS Salvage\n(expanded)", title = "Juvenile Longfin Smelt Salvage\nWY 2014-2025") +
   scale_color_viridis(discrete = TRUE, option = "turbo")+
   scale_alpha_manual(values = c(0.3, 1)) + 
   scale_size_manual(values = c(1.6, 3)) +
