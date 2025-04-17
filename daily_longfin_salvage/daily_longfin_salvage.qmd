@@ -1,0 +1,114 @@
+---
+title: "daily_longfin_salvage"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+library(here)
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(janitor)
+library(lubridate)
+library(viridis)
+library(readxl)
+```
+
+## Notes on Processed Data
+
+-   Removed any row without a count, length, sample fraction
+-   Filtered to 2014-2025
+-   Assigned Life Stage (Adult \> 60mm; Juvenile \<= 60 mm)
+-   Cumulative Salvage represents fish count/sample fraction
+
+```{r}
+lfs_data <- read_excel("WY2025_smelt_catch.xlsx", sheet = 2)  %>%
+  clean_names()
+
+df_juv_2025 <- lfs_data %>%
+  filter(salvage_sum>0)%>%
+  filter(fork_length <=60) %>%
+  rename(expanded = exp_salv,
+         length = fork_length,
+         lifestage = life_stage) %>%
+  mutate(wy = "2025",
+         date = ymd(date),
+         month = month(date),
+         date2 = case_when(month>=10 ~ ymd(paste0(1980, "-", month, "-", day(date))),
+                           month<10 ~ ymd(paste0(1981,"-", month, "-", day(date) )))) %>%
+  mutate(facility = if_else(station_code == "SFF", "SWP", "CVP"),
+         cumulative_salvage = cumsum(expanded)) %>%
+  select(facility, date, length, wy, month, date2, lifestage, expanded, cumulative_salvage)
+```
+
+```{r, include = FALSE}
+lfs_salvage0 <- read_csv(here("data_raw/lfs_loss.csv")) 
+lfs_salvage <- lfs_salvage0 %>%
+  clean_names() %>%
+  filter(!is.na(facility),
+         !is.na(nfish),
+         !is.na(length)) %>%
+  mutate(sample_time = mdy_hm(sample_time),
+         year = year(sample_time),
+         month = month(sample_time),
+         date = date(sample_time),
+         wy = if_else(month>=10, year+1, year)) %>%
+  filter(wy > 2013) %>%
+  mutate(wy = as.factor(wy)) %>%
+  mutate(date2 = case_when(month>=10 ~ ymd(paste0(1980, "-", month, "-", day(date))),
+                           month<10 ~ ymd(paste0(1981,"-", month, "-", day(date) )))) %>%
+  mutate(lifestage = if_else(length>60, "Adult", if_else(length>=19, "Juvenile", "Larva"))) %>%
+  mutate(expanded = nfish/sample_fraction)%>%
+  filter(!is.na(expanded)) %>%
+  group_by(wy, lifestage) %>%
+  arrange(date) %>%
+  mutate(cumulative_salvage = cumsum(expanded)) %>%
+  ungroup() %>%
+  select(facility, date, length, wy, month, date2, lifestage, expanded, cumulative_salvage)
+```
+
+```{r, include = FALSE}
+## Combine data frames
+lfs_salvage_all <- bind_rows(lfs_salvage %>% filter(lifestage == "Juvenile"), df_juv_2025) %>%
+  mutate(current_year = if_else(wy == 2025, "Y", "N"))
+```
+
+```{r longfin-plot, echo = FALSE, fig.cap = "Longfin Smelt Salvage, WY 2014-2025. Data from SacPAS/CDFW.", fig.width = 9, fig.height = 6}
+## Plot results
+scaledf <- lfs_salvage_all[which(!duplicated(lfs_salvage_all$lifestage)),]
+
+current = max(df_juv_2025$cumulative_salvage)
+
+(plot_lfs_salvage <- ggplot() +
+  geom_point(data = scaledf, alpha = 0, aes(x = date2, y = cumulative_salvage)) + 
+  geom_point(data=lfs_salvage_all, aes(x = date2, y = cumulative_salvage, color = wy, shape = wy, group = wy, size = current_year, alpha = current_year)) +
+  geom_line(data=lfs_salvage_all, aes(x = date2, y = cumulative_salvage, color = wy, group = wy, alpha = current_year)) + 
+    geom_hline(yintercept = 618, linetype = "dashed")+
+    geom_hline(yintercept = 927, linetype = "dashed")+
+    annotate(geom = "text", x = ymd("1981-03-10"), y = 450, label = "50% Threshold: 620")+ 
+    annotate(geom = "text", x = ymd("1981-03-10"), y = 1100, label = "75% Threshold: 927")+ 
+  annotate(geom = "text", x = ymd("1981-03-20"), y = 6500,size = 4, label = paste0("Current 2025 \nCumulative Salvage:", current))+ 
+    annotate("rect", xmin = ymd("1981-03-04"), xmax = ymd("1981-04-05"), ymin = 6000, ymax = 7000, fill = NA, color = "black")+
+  labs(x = "Date", color = "Water Year", shape = "Water Year", y = "Cumulative LFS Salvage\n(expanded)", title = "Longfin Smelt Salvage\nWY 2014-2025") +
+  scale_color_viridis(discrete = TRUE, option = "turbo")+
+  scale_alpha_manual(values = c(0.3, 1)) + 
+  scale_size_manual(values = c(1.6, 3)) +
+  scale_shape_manual(values = c(25, 4, 1, 23, 15, 7, 23, 3, 19, 0, 8))+
+  scale_x_date(date_labels = "%b") +
+  theme_bw() +
+  guides(size = "none", alpha = "none") +
+  theme(strip.text = element_text(size = 12),
+        axis.text = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        axis.title.x = element_blank(),
+        axis.title = element_text(size = 13),
+        legend.title = element_text(size = 13),
+        plot.title = element_text(hjust = 0.5)))
+```
+
+```{r, include = FALSE}
+png(paste0("lfs_daily_salvage_plot_", today(), ".png"), res = 300, width = 8, height = 5, units = "in")
+plot_lfs_salvage
+dev.off()
+```
