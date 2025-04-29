@@ -1,0 +1,190 @@
+---
+title: "Adult LFS Entrainment"
+format: pdf
+editor: visual
+---
+
+```{r, echo = FALSE, warning=FALSE,message = FALSE}
+library(readr)
+library(ggplot2)
+library(lubridate)
+library(dplyr)
+library(here)
+library(janitor)
+library(readxl)
+library(kableExtra)
+library(sharpshootR)
+library(zoo)
+```
+
+```{r, echo = FALSE}
+#Code to pull Dayflow data from Pascale Goertler https://github.com/goertler/inundation/blob/main/R/get_dayflow.R
+get_dayflow <- function(){
+  # get metadata
+  m <- jsonlite::fromJSON("https://data.cnra.ca.gov/dataset/06ee2016-b138-47d7-9e85-f46fae674536.jsonld")
+  
+  file_table <- m$`@graph`
+  
+  file_table <- subset(file_table, `dct:format` == "CSV")
+  
+  urls <- grep("results", file_table$`dcat:accessURL`$`@id`, value = TRUE)
+  
+  
+  # read in the data
+  col_types <- readr::cols(.default = readr::col_character())
+  dat <- lapply(urls, readr::read_csv, col_types=col_types, show_col_types = FALSE, progress = FALSE)
+  suppressWarnings(dat <- lapply(dat, function(x){
+    if (is.null(x$X2)){
+      x$X2 <- NA
+    }
+    return(x[, c("Date", "X2")])
+  }))
+  
+  
+  # bind data
+  dayflow <- do.call(rbind, dat)
+  
+  # rename columns
+  dayflow$Date <- lubridate::parse_date_time(dayflow$Date, orders = c("mdy", "ymd", "dmy"))
+  dayflow$X2 <- as.numeric(dayflow$X2)
+  
+  # clean names
+  dayflow <- janitor::clean_names(dayflow)
+  
+  # remove duplicates
+  i <- which(!duplicated(dayflow))
+  dayflow <- dayflow[i, ]
+  
+  # start when data starts
+  dayflow_clean <- na.omit(dayflow)
+  
+  return(dayflow_clean)
+  
+}
+```
+
+## Adult LFS Entrainment
+
+**ITP Effects Analysis Text (p. 68-70):**
+
+Grimaldo et al. (2009) found a significant correlation between negative OMR flow and juvenile LFS salvage at SWP and CVP south Delta export facilities but found no significant relationship between salvage and several abiotic covariates for adults. These results may be explained by the behavior of adult fish during the spawning period. Adult LFS stage in brackish waters downstream of spawning grounds prior to nocturnal migrations into fresher water to spawn (Hobbs et al. 2019a). This migration behavior can lead to entrainment, particularly during dry winters when X2 is near or upstream of the confluence. The winter distribution of adult LFS in the upper estuary is associated with the location of X2 (Figure 2) and adult LFS salvage is greatest in years of high FMWT index and high Dec-Mar X2 position, however, the biotic and abiotic factors that influence adult entrainment into the SWP and CVP remain an area of further scientific study.
+
+Salvage greater when fish had recently initiated migration past Chipps Island and salvage remained high for roughly 36-days post-migration from Chipps Island and south Delta export rates were high (greater than 11,000 cfs). More generally, salvage increased with fish proximity to the CVP and SWP south Delta export facilities and the magnitude of negative OMR flows caused by the export facilities. These are additive effects, when fish are closer to the facilities, exports are high, and OMR is highly negative we observe higher salvage than when only one factor is in effect.
+
+\pagebreak
+
+```{r, echo = FALSE, warning=FALSE,message = FALSE}
+# Read in data
+x2 <-  get_dayflow()
+x2_df <- x2 %>%
+  mutate(date = ymd(date),
+         month = month(date),
+         year = year(date),
+         water_year = factor(if_else(month>9, year+1, year)),
+         x2_avg = round(zoo::rollapply(x2, 30, mean, align = 'right', partial = TRUE),2)) %>%
+  select(date,month, wy = water_year, x2, x2_avg) 
+
+FMWT <- read_csv("https://filelib.wildlife.ca.gov/Public/TownetFallMidwaterTrawl/FMWT%20Data/FMWTindices.csv") %>%
+  clean_names()
+
+baystudy <- read_excel(here("Larval_LFS_Briefing/lfs_age1+_indices_baystudy.xlsx")) %>%
+  clean_names() %>%
+  rename(lfs_index = corrected_lfs_age_1_index_aug_dec)
+
+lfs_salvage0 <- read_csv(here("data_raw/lfs_loss.csv")) 
+lfs_salvage <- lfs_salvage0 %>%
+  clean_names() %>%
+  filter(!is.na(facility),
+         !is.na(nfish),
+         !is.na(length)) %>%
+  mutate(sample_time = mdy_hm(sample_time),
+         year = year(sample_time),
+         month = month(sample_time),
+         date = date(sample_time),
+         wy = if_else(month>=10, year+1, year)) %>%
+  # filter(wy > 2013) %>%
+  mutate(wy = as.factor(wy)) %>%
+  mutate(date2 = case_when(month>=10 ~ ymd(paste0(1980, "-", month, "-", day(date))),
+                           month<10 ~ ymd(paste0(1981,"-", month, "-", day(date) )))) %>%
+  mutate(lifestage = if_else(length>=60, "Adult", if_else(length>=19, "Juvenile", "Larva"))) %>%
+  mutate(expanded = nfish/sample_fraction)%>%
+  filter(!is.na(expanded)) %>%
+  group_by(wy, lifestage) %>%
+  arrange(date) %>%
+  mutate(cumulative_salvage = round(cumsum(expanded),2)) %>%
+  ungroup() %>%
+  select(facility, date, length, wy, month, date2, lifestage, expanded, cumulative_salvage)
+```
+
+```{r, echo = FALSE, warning=FALSE,message = FALSE}
+fmwt_lfs <- FMWT %>% select(year, longfin_smelt)
+lfs_salvage_adult <- lfs_salvage %>% 
+  filter(lifestage == "Adult") 
+```
+
+```{r, echo = FALSE, warning=FALSE,message = FALSE}
+## Calculate threshold
+baystudy_threshold <- baystudy %>%
+  mutate(threshold = (lfs_index /20) + 1) %>%
+  mutate(wy = factor(year + 1))
+```
+
+```{r, echo = FALSE, warning=FALSE,message = FALSE}
+## Combine with salvage
+lfs <- left_join(lfs_salvage_adult, baystudy_threshold, by = "wy") %>%
+  left_join(x2_df, by = c("wy", "date")) %>%
+  mutate(exceed = if_else(cumulative_salvage>threshold, 1L, 0L))
+```
+
+```{r, echo = FALSE, warning=FALSE,message = FALSE}
+## First day exceedance
+lfs_exceed <- lfs %>% 
+  filter(exceed == 1L) %>%
+  group_by(wy) %>%
+  slice(1) %>%
+  ungroup()
+```
+
+**Adult Longfin Smelt Entrainment Protection Action:**
+
+If cumulative water year salvage of Longfin smelt with fork length \>= 60 mm at the CVP and SWP facilities exceeds the salvage threshold, where:
+
+$$
+Salvage threshold = (\frac{SFBS \ LFS \ Age \ 1+ \ index}{20}) + 1
+$$
+
+*Where:* The San Francisco Bay Study (SFBS) Longfin smelt (LFS) Age 1+ index is calculated using age 1+ fish captured in the mid water trawl from the full Bay Study sampling area (CDFG 1999). The index is additive for the months of August, September, October, November, and December.
+
+```{r, echo = FALSE, warning=FALSE,message = FALSE}
+kable(lfs_exceed %>% 
+  select(wy, date, lfs_index, threshold, x2, x2_avg, cumulative_salvage),
+  caption = "Date of first salvage exceedance of Adult LFS Threshold. X2 values from Dayflow, with averaged X2 from the previous 30 days. Years not displayed did not have applicable LFS Salvage.")
+```
+
+```{r, echo = FALSE, warning=FALSE,message = FALSE}
+#| fig-cap: "Date of first exceedance of LFS Threshold. Labels indicate the threshold for each Water Year. Years not displayed did not have applicable LFS Salvage."
+ggplot(lfs_exceed) + 
+  geom_point(aes(date2, wy), size = 3, shape = 18, color = "navy") +
+  geom_label(aes(date2, wy, label = threshold),vjust = -0.5, size = 3)+
+  labs(y = "Water Year")+
+  theme_bw() +
+  theme(axis.title.x = element_blank())
+```
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+#| fig-cap: "Relationship between Date of Threshold Exceedance and Average X2."
+ggplot(lfs_exceed) + 
+  geom_point(aes(date2, x2_avg), size = 2.5, shape = 15, color = "black") +
+  geom_smooth(aes(date2, x2_avg), method = "lm", color = "orange3") +
+  # geom_label(aes(date2, wy, label = threshold),vjust = -0.5, size = 3)+
+  labs(y = "X2 (km)")+
+  theme_bw() +
+  theme(axis.title.x = element_blank())
+```
+
+```{r, include = FALSE}
+lfs_exceed$doy = lubridate::yday(lfs_exceed$date2)
+correl <- filter(lfs_exceed, !is.na(x2_avg))
+cor(correl$doy, correl$x2_avg)
+```
+
