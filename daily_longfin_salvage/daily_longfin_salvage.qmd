@@ -19,7 +19,7 @@ library(readxl)
 
 -   Removed any row without a count, length, sample fraction
 -   Filtered to 2014-2025
--   Assigned Life Stage (Adult >= 60mm; Juvenile <= 60 mm)
+-   Assigned Life Stage (Adult \>= 60mm; Juvenile \<= 60 mm)
 -   Cumulative Salvage represents fish count/sample fraction
 
 ```{r}
@@ -84,8 +84,8 @@ lfs_salvage_adult <- lfs_salvage_all %>%
 
 ```
 
-
 ## Juvenile Plot
+
 ```{r longfin-plot, echo = FALSE, fig.cap = "Longfin Smelt Salvage, WY 2014-2025. Data from SacPAS/CDFW.", fig.width = 9, fig.height = 6}
 ## Plot results
 scaledf <- lfs_salvage_all[which(!duplicated(lfs_salvage_all$lifestage)),]
@@ -128,6 +128,7 @@ dev.off()
 ```
 
 ## Adult Plot
+
 ```{r}
 currenta = max(df_2025%>% 
                  filter(lifestage == "Adult") %>% 
