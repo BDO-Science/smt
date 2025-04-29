@@ -19,7 +19,7 @@ library(readxl)
 
 -   Removed any row without a count, length, sample fraction
 -   Filtered to 2014-2025
--   Assigned Life Stage (Adult \> 60mm; Juvenile \<= 60 mm)
+-   Assigned Life Stage (Adult >= 60mm; Juvenile <= 60 mm)
 -   Cumulative Salvage represents fish count/sample fraction
 
 ```{r}
@@ -31,7 +31,7 @@ df_2025 <- lfs_data %>%
   rename(expanded = exp_salv,
          length = fork_length,
          lifestage = life_stage) %>%
-  mutate(lifestage = if_else(length>60, "Adult", if_else(length>=19, "Juvenile", "Larva"))) %>%
+  mutate(lifestage = if_else(length>=60, "Adult", if_else(length>=19, "Juvenile", "Larva"))) %>%
   mutate(wy = "2025",
          date = ymd(date),
          month = month(date),
@@ -60,7 +60,7 @@ lfs_salvage <- lfs_salvage0 %>%
   mutate(wy = as.factor(wy)) %>%
   mutate(date2 = case_when(month>=10 ~ ymd(paste0(1980, "-", month, "-", day(date))),
                            month<10 ~ ymd(paste0(1981,"-", month, "-", day(date) )))) %>%
-  mutate(lifestage = if_else(length>60, "Adult", if_else(length>=19, "Juvenile", "Larva"))) %>%
+  mutate(lifestage = if_else(length>=60, "Adult", if_else(length>=19, "Juvenile", "Larva"))) %>%
   mutate(expanded = nfish/sample_fraction)%>%
   filter(!is.na(expanded)) %>%
   group_by(wy, lifestage) %>%
